@@ -1,14 +1,15 @@
 # Capistrano Unicorn
 
-Capistrano plugin that integrates Unicorn tasks into capistrano deployment script.
+Capistrano 3.x plugin that integrates Unicorn tasks into capistrano deployment script.
+Taken from https://github.com/sosedoff/capistrano-unicorn and adapted to work with Capistrano 3.x.
+
+**Note: this code is not well tested, if anything fails, please report it. Use at your own risk.**
 
 **Developers:** Please consider contributing your forked changes, or opening an
 issue if there is no existing relevant one. There are a lot of forks--we'd love
 to reabsorb some of the issues/solutions the community has encountered.
 
-[![Build Status](https://travis-ci.org/sosedoff/capistrano-unicorn.png?branch=master)](https://travis-ci.org/sosedoff/capistrano-unicorn)
-[![Gem Version](https://badge.fury.io/rb/capistrano-unicorn.png)](http://badge.fury.io/rb/capistrano-unicorn)
-[![Code Climate](https://codeclimate.com/github/sosedoff/capistrano-unicorn.png)](https://codeclimate.com/github/sosedoff/capistrano-unicorn)
+[![Gem Version](https://badge.fury.io/rb/sepastian-capistrano3-unicorn.png)](http://badge.fury.io/rb/sepastian-capistrano3-unicorn)
 
 ## Usage
 
