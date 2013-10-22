@@ -125,7 +125,7 @@ namespace :unicorn do
   
   desc 'Reload Unicorn'
   task :reload do
-    on roles => unicorn_roles, :except => {:no_release => true} do
+    on roles unicorn_roles, :except => {:no_release => true} do
       execute "if #{unicorn_is_running?}; then #{unicorn_send_signal('HUP')}; else #{start_unicorn}; fi;"
       # run <<-END
       #   if #{unicorn_is_running?}; then
@@ -140,7 +140,7 @@ namespace :unicorn do
 
   desc 'Add a new worker'
   task :add_worker do
-    on roles => unicorn_roles, :except => {:no_release => true} do
+    on roles unicorn_roles, :except => {:no_release => true} do
       execute "if #{unicorn_is_running?}; then #{unicorn_send_signal('TTIN')}; fi;"
       # run <<-END
       #   if #{unicorn_is_running?}; then
@@ -155,7 +155,7 @@ namespace :unicorn do
 
   desc 'Remove amount of workers'
   task :remove_worker do
-    on roles => unicorn_roles, :except => {:no_release => true} do
+    on roles unicorn_roles, :except => {:no_release => true} do
       execute "if #{unicorn_is_running?}; then #{unicorn_send_signal('TTOU')}; fi;"
       # run <<-END
       #   if #{unicorn_is_running?}; then
