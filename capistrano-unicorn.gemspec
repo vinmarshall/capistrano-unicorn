@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path("../lib/capistrano-unicorn/version", __FILE__)
+require File.expand_path("../lib/capistrano/unicorn/version", __FILE__)
 
 Gem::Specification.new do |spec|
-  spec.name        = "capistrano-unicorn"
+  spec.name        = "sepastian-capistrano3-unicorn"
   spec.version     = CapistranoUnicorn::VERSION.dup
-  spec.author      = "Dan Sosedoff"
-  spec.email       = "dan.sosedoff@gmail.com"
-  spec.homepage    = "https://github.com/sosedoff/capistrano-unicorn"
-  spec.summary     = %q{Unicorn integration for Capistrano}
-  spec.description = %q{Capistrano plugin that integrates Unicorn server tasks.}
+  spec.author      = "Sebastian Gassner, Dan Sosedoff"
+  spec.email       = "sebastian.gassner@gmail.com"
+  spec.homepage    = "https://github.com/sepastian/capistrano-unicorn"
+  spec.summary     = %q{Unicorn integration for Capistrano 3.x}
+  spec.description = %q{Capistrano 3.x plugin that integrates Unicorn server tasks.}
   spec.license     = "MIT"
 
   spec.files         = `git ls-files`.split("\n")
@@ -18,5 +18,5 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "rake"
   spec.add_development_dependency "unicorn"
-  spec.add_runtime_dependency     "capistrano", "< 3.0"
+  spec.add_runtime_dependency     "capistrano", "~> 3.0.0"
 end

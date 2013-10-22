@@ -1,10 +1,29 @@
+require 'tempfile'
+
 module CapistranoUnicorn
   module Utility
-
+    # In Capistrano 3, shell scripts must be invoked with SSHKit's execute, instead of run.
+    # SSHKit will "sanitize" all multi-line commands (here docs), replacing "\n" with ";".
+    # Sanitizing renders some shell scripts illegal, for instance:
+    #
+    #   if [ -e FILE ]; then
+    #     echo "Found."
+    #   fi
+    # 
+    # This would become
+    #
+    #   if [ -e FILE ]; then; echo "Found."; fi;
+    #
+    # which is illegal because of the ';' after 'then'.
+    #
+    # To avoid errors, replace all "\n" with " " in shell scripts,
+    # before SSHKit gets a chance to replace "\n" with ";"
     def local_unicorn_config
-      File.exist?(unicorn_config_rel_file_path) ?
-          unicorn_config_rel_file_path
-        : unicorn_config_stage_rel_file_path
+      if File.exist? fetch(:unicorn_config_rel_file_path)
+        fetch(:unicorn_config_rel_file_path)
+      else
+        fetch(:unicorn_config_stage_rel_file_path)
+      end
     end
 
     def extract_pid_file
@@ -42,13 +61,13 @@ module CapistranoUnicorn
     # Stale Unicorn process pid file
     #
     def old_unicorn_pid
-      "#{unicorn_pid}.oldbin"
+      "#{fetch :unicorn_pid}.oldbin"
     end
 
     # Command to check if Unicorn is running
     #
     def unicorn_is_running?
-      remote_process_exists?(unicorn_pid)
+      remote_process_exists?(fetch :unicorn_pid)
     end
 
     # Command to check if stale Unicorn is running
@@ -59,7 +78,7 @@ module CapistranoUnicorn
 
     # Get unicorn master process PID (using the shell)
     #
-    def get_unicorn_pid(pid_file=unicorn_pid)
+    def get_unicorn_pid(pid_file=fetch(:unicorn_pid))
       "`cat #{pid_file}`"
     end
 
@@ -79,7 +98,7 @@ module CapistranoUnicorn
     # Otherwise run as default (:user) user.
     #
     def try_unicorn_user
-      "#{sudo :as => unicorn_user.to_s}" if unicorn_user.kind_of?(String)
+      "#{sudo :as => unicorn_user.to_s}" if fetch(:unicorn_user).kind_of?(String)
     end
 
     # Kill Unicorns in multiple ways O_O
@@ -93,37 +112,36 @@ module CapistranoUnicorn
           echo "Unicorn is not running.";
         fi;
       END
-
-      script
+      script.split.join(' ')
     end
 
     # Start the Unicorn server
     #
     def start_unicorn
       %Q%
-        if [ -e "#{unicorn_config_file_path}" ]; then
-          UNICORN_CONFIG_PATH=#{unicorn_config_file_path};
+        if [ -e "#{fetch :unicorn_config_file_path}" ]; then
+          UNICORN_CONFIG_PATH=#{fetch :unicorn_config_file_path};
         else
-          if [ -e "#{unicorn_config_stage_file_path}" ]; then
-            UNICORN_CONFIG_PATH=#{unicorn_config_stage_file_path};
+          if [ -e "#{fetch :unicorn_config_stage_file_path}" ]; then
+            UNICORN_CONFIG_PATH=#{fetch :unicorn_config_stage_file_path};
           else
-            echo "Config file for "#{unicorn_env}" environment was not found at either "#{unicorn_config_file_path}" or "#{unicorn_config_stage_file_path}"";
+            echo "Config file for "#{fetch :unicorn_env}" environment was not found at either "#{fetch :unicorn_config_file_path}" or "#{fetch :unicorn_config_stage_file_path}"";
             exit 1;
           fi;
         fi;
 
-        if [ -e "#{unicorn_pid}" ]; then
-          if #{try_unicorn_user} kill -0 `cat #{unicorn_pid}` > /dev/null 2>&1; then
+        if [ -e "#{fetch :unicorn_pid}" ]; then
+          if #{try_unicorn_user} kill -0 `cat #{fetch :unicorn_pid}` > /dev/null 2>&1; then
             echo "Unicorn is already running!";
             exit 0;
           fi;
 
-          #{try_unicorn_user} rm #{unicorn_pid};
+          #{try_unicorn_user} rm #{fetch :unicorn_pid};
         fi;
 
         echo "Starting Unicorn...";
-        cd #{app_path} && #{try_unicorn_user} RAILS_ENV=#{rails_env} BUNDLE_GEMFILE=#{bundle_gemfile} #{unicorn_bundle} exec #{unicorn_bin} -c $UNICORN_CONFIG_PATH -E #{unicorn_rack_env} -D #{unicorn_options};
-      %
+        cd #{fetch :app_path} && #{try_unicorn_user} RAILS_ENV=#{fetch :rails_env} BUNDLE_GEMFILE=#{fetch :bundle_gemfile} #{fetch :unicorn_bundle} exec #{fetch :unicorn_bin} -c $UNICORN_CONFIG_PATH -E #{fetch :unicorn_rack_env} -D #{fetch :unicorn_options};
+      %.split.join(' ')
     end
 
     def duplicate_unicorn
@@ -135,12 +153,13 @@ module CapistranoUnicorn
           #{start_unicorn}
         fi;
       END
-
-      script
+      script.split.join(' ')
     end
 
     def unicorn_roles
-      defer{ fetch(:unicorn_roles, :app) }
+      # TODO proc necessary here?
+      Proc.new{ fetch(:unicorn_roles, :app) }.call
+      #defer{ fetch(:unicorn_roles, :app) }
     end
 
   end
