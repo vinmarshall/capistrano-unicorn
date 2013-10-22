@@ -20,14 +20,14 @@ Add the library to your `Gemfile`:
 
 ```ruby
 group :development do
-  gem 'capistrano-unicorn', :require => false
+  gem 'sepastian-capistrano3-unicorn', :require => false
 end
 ```
 
 And load it into your deployment script `config/deploy.rb`:
 
 ```ruby
-require 'capistrano-unicorn'
+require 'capistrano/unicorn'
 ```
 
 Add unicorn restart task hook:
