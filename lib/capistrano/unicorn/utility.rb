@@ -99,7 +99,7 @@ module CapistranoUnicorn
     # Otherwise run as default (:user) user.
     #
     def try_unicorn_user
-      "#{sudo :as => unicorn_user.to_s}" if fetch(:unicorn_user).kind_of?(String)
+      "#{sudo :as => fetch(:unicorn_user).to_s}" if fetch(:unicorn_user).kind_of?(String)
     end
 
     # Kill Unicorns in multiple ways O_O
