@@ -1,5 +1,6 @@
 module CapistranoUnicorn
-  unless defined?(::CapistranoUnicorn::VERSION)
-    VERSION = "0.3.2".freeze
-  end
+  MAJOR = 0
+  MINOR = 4
+  PATCH = 0
+  VERSION = [ MAJOR, MINOR, PATCH ].join('.').freeze
 end
