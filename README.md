@@ -25,7 +25,7 @@ group :development do
 end
 ```
 
-And load it into your deployment script `config/deploy.rb`:
+And require it in your `Capfile`:
 
 ```ruby
 require 'capistrano/unicorn'
