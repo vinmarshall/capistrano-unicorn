@@ -2,7 +2,7 @@
 require File.expand_path("../lib/capistrano/unicorn/version", __FILE__)
 
 Gem::Specification.new do |spec|
-  spec.name        = "sepastian-capistrano3-unicorn"
+  spec.name        = "capistrano-unicorn"
   spec.version     = CapistranoUnicorn::VERSION.dup
   spec.author      = "Sebastian Gassner, Dan Sosedoff"
   spec.email       = "sebastian.gassner@gmail.com"
@@ -18,5 +18,5 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "rake"
   spec.add_development_dependency "unicorn"
-  spec.add_dependency "capistrano", "~> 3.0"
+  spec.add_dependency "capistrano", "~> 3.1"
 end
